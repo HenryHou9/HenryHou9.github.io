@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>js 相关爬虫解析方法分享 - 海纳百川，有容乃大</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="侯容" /><meta name="description" content="引入 由于现在反爬虫机制的加强，传输数据的中间流程也发生了改变，一些不希望被爬取的网站纷纷加入了一些防盗设施，这是反反爬虫的解析 js 进行抓取的流" /><meta name="keywords" content="互联网, 技术, internet, technology, hourong, blog, 侯容, 博客, 海纳百川, 有容乃大" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.5 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hou-rong.github.io/post/js-%E7%9B%B8%E5%85%B3%E7%88%AC%E8%99%AB%E8%A7%A3%E6%9E%90%E6%96%B9%E6%B3%95%E5%88%86%E4%BA%AB/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="js 相关爬虫解析方法分享" />
+<meta property="og:description" content="引入 由于现在反爬虫机制的加强，传输数据的中间流程也发生了改变，一些不希望被爬取的网站纷纷加入了一些防盗设施，这是反反爬虫的解析 js 进行抓取的流" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hou-rong.github.io/post/js-%E7%9B%B8%E5%85%B3%E7%88%AC%E8%99%AB%E8%A7%A3%E6%9E%90%E6%96%B9%E6%B3%95%E5%88%86%E4%BA%AB/" />
+<meta property="article:published_time" content="2017-07-10T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-07-10T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="js 相关爬虫解析方法分享">
+<meta itemprop="description" content="引入 由于现在反爬虫机制的加强，传输数据的中间流程也发生了改变，一些不希望被爬取的网站纷纷加入了一些防盗设施，这是反反爬虫的解析 js 进行抓取的流">
+
+
+<meta itemprop="datePublished" content="2017-07-10T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2017-07-10T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5197">
+
+
+
+<meta itemprop="keywords" content="爬虫,Python,JavaScript," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="js 相关爬虫解析方法分享"/>
+<meta name="twitter:description" content="引入 由于现在反爬虫机制的加强，传输数据的中间流程也发生了改变，一些不希望被爬取的网站纷纷加入了一些防盗设施，这是反反爬虫的解析 js 进行抓取的流"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">侯容的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">侯容的博客</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">js 相关爬虫解析方法分享</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-07-10 </span>
+        
+          <span class="more-meta"> 约 5197 字 </span>
+          <span class="more-meta"> 预计阅读 11 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#引入">引入</a></li>
+<li><a href="#需要解析的-js-包含什么">需要解析的 js 包含什么</a></li>
+<li><a href="#具体情况">具体情况</a>
+<ul>
+<li><a href="#查看页面">查看页面</a></li>
+<li><a href="#伪造一个简单且危险的请求测试此部分是否可以正常返回值">伪造一个简单且危险的请求测试此部分是否可以正常返回值</a></li>
+<li><a href="#为了强调这一点-我不惜使用标题来说-这样的话一般来说是会失败的-不失败的话危险也是十分巨大的">为了强调这一点，我不惜使用标题来说。这样的话一般来说是会失败的，不失败的话危险也是十分巨大的。</a></li>
+<li><a href="#进一步查看-b-中的信息">进一步查看 b 中的信息</a></li>
+<li><a href="#获取最终的-js-函数">获取最终的 js 函数</a></li>
+<li><a href="#构造伪造的-python-方法">构造伪造的 python 方法</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h2 id="引入">引入</h2>
+
+<p>由于现在反爬虫机制的加强，传输数据的中间流程也发生了改变，一些不希望被爬取的网站纷纷加入了一些防盗设施，这是反反爬虫的解析 js 进行抓取的流程变得必不可少。</p>
+
+<h2 id="需要解析的-js-包含什么">需要解析的 js 包含什么</h2>
+
+<p>就我现在所见过的需要解析 js 的爬虫</p>
+
+<ul>
+<li><p>不需要请求 key 或者 cookie 里面需要传递什么重要参数的爬虫。简单的 ajax ，直接通过打请求就可以获得数据。WebSocket ，http 1.1 建立的长连接方法，可通过 webSocket.send 发送服务器所要的请求参数直接获取相关数据。</p></li>
+
+<li><p>需要进行进一步解析的 key 或者 cookie 里面需要加入特殊字符的爬虫（由于页面中请求 js 的特性，需要先把源文件下载到本地浏览器中，再执行。这类页面的加密其实都应该是明文的。但由于做了混淆，可能我们阅读起来会非常的费力），其中加密的方式有以下几种：</p>
+
+<ul>
+<li>String.fromCharCode() 系列及其变种。这种一般是将一段数字，或者函数变成文字，然后再转成 charcode 最后保存在页面中。还原方式就是逆向，然后再 eval</li>
+<li>将几个数学函数传入，并进行计算，最终通过返回值确定</li>
+<li>自定义函数，并封装到某个 js 中，最终通过此函数进行计算并返回相关值，同时有可能检测当前浏览器状态</li>
+<li>函数中添加很多注释，导致函数无法阅读</li>
+</ul></li>
+</ul>
+
+<h2 id="具体情况">具体情况</h2>
+
+<p>总之，上面的方法归根结底就是将函数变字符串，中间随便加注释，或者加几个数学函数，再 eval 一下这样。难并不难，只是繁琐。现在以我查看 elong 验证的情况具体介绍遇到这种状况时的各个处理方式。</p>
+
+<h3 id="查看页面">查看页面</h3>
+
+<p>打开页面 <a href="http://m.elong.com/ihotel/315197/?source_id=315197#detailTab">http://m.elong.com/ihotel/315197/?source_id=315197#detailTab</a>并查看源码</p>
+
+<p>首先我们看到了一个十分不和谐的字符串
+<img src="http://olw01uxs5.bkt.clouddn.com/2017-07-10-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-07-10%20%E4%B8%8A%E5%8D%8812.04.35.png" alt="屏幕快照 2017-07-10 上午12.04.35" /></p>
+
+<p>并能够找到与之配合的 js</p>
+
+<p><img src="http://olw01uxs5.bkt.clouddn.com/2017-07-10-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-07-10%20%E4%B8%8A%E5%8D%8812.04.43.png" alt="屏幕快照 2017-07-10 上午12.04.43" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nb">eval</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">k</span><span class="p">,</span><span class="nx">e</span><span class="p">,</span><span class="nx">d</span><span class="p">){</span><span class="nx">e</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">){</span><span class="k">return</span><span class="p">(</span><span class="nx">c</span><span class="o">&lt;</span><span class="nx">a</span><span class="o">?</span><span class="s2">&#34;&#34;</span><span class="o">:</span><span class="nx">e</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">c</span><span class="o">/</span><span class="nx">a</span><span class="p">)))</span><span class="o">+</span><span class="p">((</span><span class="nx">c</span><span class="o">=</span><span class="nx">c</span><span class="o">%</span><span class="nx">a</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">35</span><span class="o">?</span><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">c</span><span class="o">+</span><span class="mi">29</span><span class="p">)</span><span class="o">:</span><span class="nx">c</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">36</span><span class="p">))};</span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="s1">&#39;&#39;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^/</span><span class="p">,</span><span class="nb">String</span><span class="p">)){</span><span class="k">while</span><span class="p">(</span><span class="nx">c</span><span class="o">--</span><span class="p">)</span><span class="nx">d</span><span class="p">[</span><span class="nx">e</span><span class="p">(</span><span class="nx">c</span><span class="p">)]</span><span class="o">=</span><span class="nx">k</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span><span class="o">||</span><span class="nx">e</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span><span class="nx">k</span><span class="o">=</span><span class="p">[</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span><span class="k">return</span> <span class="nx">d</span><span class="p">[</span><span class="nx">e</span><span class="p">]}];</span><span class="nx">e</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span><span class="k">return</span><span class="s1">&#39;\\w+&#39;</span><span class="p">};</span><span class="nx">c</span><span class="o">=</span><span class="mi">1</span><span class="p">;};</span><span class="k">while</span><span class="p">(</span><span class="nx">c</span><span class="o">--</span><span class="p">)</span><span class="k">if</span><span class="p">(</span><span class="nx">k</span><span class="p">[</span><span class="nx">c</span><span class="p">])</span><span class="nx">p</span><span class="o">=</span><span class="nx">p</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;\\b&#39;</span><span class="o">+</span><span class="nx">e</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;\\b&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">),</span><span class="nx">k</span><span class="p">[</span><span class="nx">c</span><span class="p">]);</span><span class="k">return</span> <span class="nx">p</span><span class="p">;}(</span><span class="s1">&#39;3 i(){g{2 a=$(&#34;#8&#34;).f();5(4==a||a==\&#39;\&#39;||a==\&#39;${8}\&#39;){0-6};2 b=7(a);2 c=9(b);0 c}d(e){0-6}};3 7(a){5(4==a||a==\&#39;\&#39;){0 a};2 b=a.j(/\\)\\^-1/h,&#34;)&amp;-1&#34;);0 b}&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;return||var|function|null|if|99|hijklmn|tsdDetail|eval||||catch||val|try|gm|abcdefgDetail|replace&#39;</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">),</span><span class="mi">0</span><span class="p">,{}))</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>阅读后发现这个函数先生成一个匿名函数，此函数有 6 个参数，并且此函数在生成的同时被调用，传入下方的若干参数，最终结果会被 eval 。</p>
+
+<p>简单查看 function 后，发现这个函数实际上是一个字符串转化的函数，通过下方给入的值以及相关判断规则，确定这个字符串应该如何由 charcode 的偏移生成一段合理的字符串。即通过 a,c,k,e,d 这些对象去修改 p 的值 <code>p=p.replace(new RegExp('\\b'+e(c)+'\\b','g')</code></p>
+
+<p>此函数在运行后会生成类似这种的方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">abcdefgDetail</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&#34;#tsdDetail&#34;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="kc">null</span> <span class="o">==</span> <span class="nx">a</span> <span class="o">||</span> <span class="nx">a</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="o">||</span> <span class="nx">a</span> <span class="o">==</span> <span class="s1">&#39;${tsdDetail}&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">99</span>
+        <span class="p">}</span>
+        <span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">hijklmn</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">c</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">99</span>
+    <span class="p">}</span>
+<span class="p">};</span><span class="kd">function</span> <span class="nx">hijklmn</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kc">null</span> <span class="o">==</span> <span class="nx">a</span> <span class="o">||</span> <span class="nx">a</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">a</span>
+    <span class="p">}</span>
+    <span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\)\^-1/gm</span><span class="p">,</span> <span class="s2">&#34;)&amp;-1&#34;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">b</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>查看后此方法每次生成的都相同，所以我们构造 javascript 函数可以从这一步开始，而不是第一个地方</p>
+
+<p>此函数的效果为从 tsDetail 中提取值，通过替换其中的字符串 replace(/)\^-1/gm, &ldquo;)&amp;-1&rdquo;)，生成 b ，从而 eval 生成 c。</p>
+
+<h3 id="伪造一个简单且危险的请求测试此部分是否可以正常返回值">伪造一个简单且危险的请求测试此部分是否可以正常返回值</h3>
+
+<p>想法很好，尝试构造简单的 python 调用方法（这样做十分危险，确保你使用的是 PhantomJS 这种带沙盒的环境）。这样获取 check_code ，repr 的原因是因为我们需要原始的字符串，而不是可打印的字符串。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">value_str</span> <span class="o">=</span> <span class="n">doc</span><span class="p">(</span><span class="s1">&#39;#tsdDetail&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="p">()</span>
+
+<span class="n">ph_runtime</span> <span class="o">=</span> <span class="n">execjs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhantomJS&#39;</span><span class="p">)</span>
+<span class="n">js_func</span> <span class="o">=</span> <span class="n">ph_runtime</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span>
+   <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">       var a=</span><span class="si">%s</span><span class="s1">;
+</span><span class="s1">       var b=a.replace(/\)\^-1/gm, &#34;)&amp;-1&#34;);
+</span><span class="s1">       var c=eval(b);
+</span><span class="s1">   &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+       <span class="nb">repr</span><span class="p">(</span><span class="n">value_str</span><span class="p">),))</span>
+       
+<span class="n">check_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">js_func</span><span class="o">.</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="为了强调这一点-我不惜使用标题来说-这样的话一般来说是会失败的-不失败的话危险也是十分巨大的">为了强调这一点，我不惜使用标题来说。这样的话一般来说是会失败的，不失败的话危险也是十分巨大的。</h3>
+
+<p>为什么？</p>
+
+<p>首先我们只知道了 b 的值是怎样的，但是 eval(b) 的结果会是怎样的我们并不知道，同时，即使返回了正确的数据，万一对方在 b 中加入了什么不为人知的代码的话，对我们的损害时毁灭的（比如 rm -rf 这样，如果你的权限管理不好，或者没用沙盒，是不是感觉很爽？）</p>
+
+<h3 id="进一步查看-b-中的信息">进一步查看 b 中的信息</h3>
+
+<p>继续我们的内容，这样返回结果是失败的。我们对 b 的内容继续查看，我们其实只需要查看 b 函数究竟是怎样的就可以明确里面运行了是什么，但由于这个字符串加了很多乱码类型的注释，干扰了我们的查看。</p>
+
+<p>乱码类型的注释像这样。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="cm">/*asdfasdkasl;kfdkl;asdkl;f*/</span><span class="kd">var</span><span class="cm">/*asjdfjklwioerjiowkfskldf*/</span><span class="nx">a</span><span class="cm">/*ajsldfjklwioeruioskdf*/</span><span class="o">=</span><span class="cm">/*asjdfjklasdjlkfkljasdf*/</span><span class="mi">1</span><span class="cm">/*asdfjklasdjkljklasdfklj*/</span><span class="p">;</span>
+<span class="cm">/*asjdjklfasdfjlkjkl*/</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="cm">/*asdjfjkasdfjklalsjkdf*/</span><span class="nx">a</span><span class="cm">/*jasdjlkfjlkasdfljalkjsdf*/</span><span class="p">);</span> 
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>虽然直接看的话还是能看懂的，但是它严重干扰了我的视线，让我非常不舒服。于是乎使用正则匹配出并将其删除。这种注释只能是多行的，所以只需要匹配 <code>/**/</code> 删除就可以，像这样。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;(/\*[\s\S]*?\*/)&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">your_code</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果在页面上调试，可以直接用 js 的 regex 删去，同理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">js_code</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\/\*[\s\S]*?\*\//g</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>处理后生成了这段 js</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">var__JtOCokI16</span> <span class="o">=</span> <span class="nb">String</span>
+    <span class="p">.</span><span class="nx">fromCharCode</span><span class="p">;</span>
+
+
+<span class="nx">var_x_QdX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2891</span><span class="p">,</span> <span class="mi">427</span><span class="p">,</span> <span class="mi">1955</span><span class="p">,</span> <span class="mi">1458</span><span class="p">,</span> <span class="mi">1704</span><span class="p">,];</span><span class="c1">//fUXRd9n
+</span><span class="c1"></span>
+
+<span class="nx">var_$cYbd</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnarguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span>
+    <span class="nx">_x_QdX</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">};</span>
+
+
+<span class="nx">var_$nK07</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnarguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span>
+    <span class="nx">_x_QdX</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">};</span>
+
+
+<span class="nx">var_$w4I</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnarguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span>
+    <span class="nx">_x_QdX</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">};</span>
+<span class="nx">var_$DCDm</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnarguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span>
+    <span class="nx">_x_QdX</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">};</span>
+<span class="nx">var_$Bkcs</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnarguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span>
+    <span class="nx">_x_QdX</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="p">};</span>
+<span class="nb">eval</span><span class="p">(</span><span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x76</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mi">0154</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">03613</span><span class="p">),</span> <span class="mh">0x6607</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">117</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x63</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">2007</span><span class="p">),</span> <span class="mh">0x6976</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x6f</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">403</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">~~</span><span class="mi">120</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="o">~~</span><span class="mi">1435</span><span class="p">),</span> <span class="mh">0x7b39</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x7d1</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x22</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x2250</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x76</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~~</span><span class="mi">97</span><span class="p">,</span> <span class="mi">1143</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="mh">0x2081</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mh">0x7766</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x68</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">105</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x6c</span><span class="p">,</span> <span class="mi">101</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span>
+        <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x28</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">1474</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3c</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x7832</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2e</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x6c</span><span class="p">,</span> <span class="mh">0x65</span><span class="p">,</span> <span class="mi">110</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">103</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x74</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="mh">0x6873</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">051</span><span class="p">,</span> <span class="mh">0x7b77</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">40</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">120</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2e</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x6cb</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x68</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x7c253</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">114</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">65</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x74</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x29</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x21</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">075</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">,</span>
+        <span class="o">~~</span><span class="mi">96</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x22</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x64</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">43</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1950</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1482</span><span class="p">),</span> <span class="mh">0x2e72</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x63</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0xb23</span><span class="p">),</span>
+        <span class="mi">97</span><span class="p">,</span> <span class="mh">0x72</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x41</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x74</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">40</span><span class="p">,</span> <span class="mh">0x70</span><span class="p">,</span> <span class="mi">433</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">410</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x65</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">115</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">101</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x7b</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">2005</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">97</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x6c</span> <span class="o">^</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x79e06</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">14824</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2e</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="o">~~</span><span class="mi">2851</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x61</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">114</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x43</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1735</span><span class="p">),</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="mi">101</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">1664</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">1127</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x2b</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x33</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1669</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x32</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x38</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mh">0x589</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">105</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x6ce49</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="mh">0x28</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">108</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x3e66</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">415</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="mh">0x64</span><span class="p">,</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">43</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x1cf</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2e</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x75</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x73</span><span class="p">,</span> <span class="mi">1160</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1931</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x64</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2e</span><span class="p">,</span> <span class="mh">0x6c87</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x65</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">110</span><span class="p">,</span> <span class="o">~~</span><span class="mi">103</span><span class="p">,</span> <span class="mi">0164</span><span class="p">,</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mh">0x2d87</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span>
+        <span class="mi">120</span><span class="p">,</span> <span class="mi">46</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">114</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">0144</span><span class="p">,</span> <span class="o">~~</span><span class="mi">101</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x41</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mh">0x70</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2b</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">41</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span>
+        <span class="mi">45</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x78</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mh">0x6843</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x61</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">111</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x6466</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span>
+        <span class="mi">101</span><span class="p">,</span> <span class="mh">0x4135</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mh">0x2871</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1928</span><span class="p">),</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">051</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x33</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x31</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">48</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mh">0x6c</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2c</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1502</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x693</span><span class="p">),</span> <span class="o">~~</span><span class="mi">101</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">0154</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x73</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">101</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x64</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x18908</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span>
+        <span class="mh">0x3b</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="o">~~</span><span class="mi">1474</span><span class="p">),</span> <span class="mh">0x2b</span><span class="p">,</span> <span class="mi">61</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">473</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x65</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">116</span><span class="p">,</span>
+        <span class="mh">0x7564</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">110</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">100</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x7d</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="mh">0x2817</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x22</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">101</span><span class="p">,</span>
+        <span class="mi">120</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">0143</span><span class="p">,</span> <span class="mi">117</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">0145</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">1434</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">386</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">03223</span><span class="p">),</span> <span class="mi">102</span><span class="p">,</span>
+        <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x75</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x63</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x7400</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x69</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">1105</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="mi">42</span><span class="p">,</span> <span class="mh">0x2554</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">320</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x7b</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">116</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x72</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">123</span><span class="p">,</span> <span class="mh">0x72</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">19908</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">116</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x7590</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">0162</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">110</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x64</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span>
+        <span class="mi">56</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">51</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x30</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x3920</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x32</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="mi">53</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x3448</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mh">0x3814</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">061</span><span class="p">,</span> <span class="mi">442</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x38</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">48</span><span class="p">,</span>
+        <span class="mi">44</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x36</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~~</span><span class="mi">53</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">443</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">54</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1681</span><span class="p">),</span> <span class="mi">48</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">))</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mh">0x2c</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">530</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">504</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">445</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x3542</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">062</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x32</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="mi">414</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mh">0x7d</span><span class="p">,</span> <span class="mh">0x2049</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x74</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x6847</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x2066</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span>
+        <span class="mh">0x28</span><span class="p">,</span> <span class="mi">0145</span><span class="p">,</span> <span class="mh">0x2950</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">57</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x39</span><span class="p">,</span>
+        <span class="mh">0x3b00</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">125</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">127</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">~~</span><span class="mi">40</span><span class="p">,</span> <span class="mi">0141</span><span class="p">,</span>
+        <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">0142</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">441</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">99</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x63</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x2c</span><span class="p">,</span>
+        <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">100</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x64</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">040</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x65</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">054</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>
+        <span class="mh">0x66</span><span class="p">,</span> <span class="mi">054</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x67</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">1037</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x2c74</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">1045</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">123</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x72</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">112</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">977</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">971</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="mi">109</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1411</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">54</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">2934</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x3b32</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">966</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="mi">32</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1429</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x26</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0xb6b97</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3d</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">323</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mh">0x6226</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">075</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x786</span><span class="p">),</span> <span class="mi">39</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x2076</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1001</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0140</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x784</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1428</span><span class="p">),</span> <span class="mi">502</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">040</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mh">0x2086</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x65</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1736</span><span class="p">),</span> <span class="mh">0x2032</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x26</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">046</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x66</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mh">0x1cd</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">0140</span><span class="p">,</span> <span class="mi">040</span><span class="p">,</span>
+        <span class="mi">38</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">064</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1672</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2934</span><span class="p">),</span> <span class="mh">0x2076</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">103</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1736</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span> <span class="mi">040</span><span class="p">,</span>
+        <span class="mi">864</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x2728</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x3170</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1672</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">104</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mi">964</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x2067</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="mh">0x2679</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">392</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x688</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">97</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x28</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~~</span><span class="mi">96</span><span class="p">,</span> <span class="mi">041</span><span class="p">,</span>
+        <span class="o">~~</span><span class="mi">73</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mh">0x591</span><span class="p">),</span> <span class="mh">0x2c50</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x6082</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x21</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x4011</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mh">0x596</span><span class="p">),</span> <span class="mh">0x2925</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mh">0x2047</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="mh">0x37</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x34</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">326</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2934</span><span class="p">),</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">988</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x183</span> <span class="o">^</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="o">~~</span><span class="mi">1951</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="o">~~</span><span class="mi">1430</span><span class="p">),</span> <span class="mi">060</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="o">~~</span><span class="mi">50</span><span class="p">,</span> <span class="mi">41</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">322</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">35</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">51</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">323</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x4042</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">03200</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0xb7e</span><span class="p">),</span>
+        <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">99</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x2766</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x6628</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x24</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span>
+        <span class="mh">0x2944</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2b</span><span class="p">,</span> <span class="mi">0140</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">726</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1425</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1672</span><span class="p">),</span> <span class="mh">0x41</span><span class="p">,</span>
+        <span class="mh">0x2613</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mh">0x6031</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1672</span><span class="p">),</span> <span class="mi">113</span><span class="p">,</span> <span class="mi">332</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span>
+        <span class="o">~~</span><span class="mi">34</span><span class="p">,</span> <span class="mh">0x6007</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">0613</span><span class="p">),</span> <span class="o">~~</span><span class="mi">87</span><span class="p">,</span> <span class="mi">057</span><span class="p">,</span> <span class="o">~~</span><span class="mi">54</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">966</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="mi">64</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="mi">75</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x2d05</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span>
+        <span class="mi">124</span><span class="p">,</span> <span class="o">~~</span><span class="mi">38</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">33</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">107</span><span class="p">,</span> <span class="mh">0x2412</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">0140</span><span class="p">,</span> <span class="mi">321</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x51</span><span class="p">,</span>
+        <span class="o">~~</span><span class="mi">39</span><span class="p">,</span> <span class="mi">564</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mh">0x2698</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1490</span><span class="p">),</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span>
+        <span class="o">~</span><span class="p">(</span><span class="mh">0x34</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="mh">0x3b</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">92</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0147</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2920</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span>
+        <span class="mi">50</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mh">0x1cb</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="mh">0x2138</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">35</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">51</span><span class="p">,</span> <span class="mh">0x2051</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x2a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mh">0x60</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">346</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x32</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">349</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="o">~~</span><span class="mi">33</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x76</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">36</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">925</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">~~</span><span class="mi">34</span><span class="p">,</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">29239</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mi">0167</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">39</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="o">~~</span><span class="mi">95</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">51</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x5c</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">34</span><span class="p">,</span>
+        <span class="o">~</span><span class="p">(</span><span class="mh">0x55</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x27</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x3356</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x6086</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1938</span><span class="p">),</span> <span class="mi">36</span><span class="p">,</span> <span class="o">~~</span><span class="mi">57</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span>
+        <span class="mi">965</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x5c89</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x36</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">37</span><span class="p">,</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">044</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x37</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="o">~~</span><span class="mi">41</span><span class="p">,</span> <span class="mh">0x3b21</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x6079</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">~~</span><span class="mi">37</span><span class="p">,</span> <span class="o">~~</span><span class="mi">110</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x780</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2936</span><span class="p">),</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1920</span><span class="p">),</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7d</span><span class="p">,</span> <span class="mh">0x2437</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x3391</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">92</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="o">~~</span><span class="mi">54</span><span class="p">,</span> <span class="mi">415</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x26</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">503</span><span class="p">),</span> <span class="mh">0x2296</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">382</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="mi">97</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">97</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">16680</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mh">0x2018</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mi">051</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mh">0x6977</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">040</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x28</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">1163</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">0160</span><span class="p">,</span> <span class="mh">0x6548</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">102</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span>
+        <span class="mi">108</span><span class="p">,</span> <span class="mi">0157</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="o">~~</span><span class="mi">97</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">565</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">075</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0xb76</span><span class="p">),</span>
+        <span class="mi">32</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">393</span><span class="p">),</span> <span class="mi">117</span><span class="p">,</span> <span class="mh">0x6e</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">~~</span><span class="mi">101</span><span class="p">,</span> <span class="mh">0x6662</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x6e</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">~</span><span class="p">(</span><span class="mh">0x65</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">14945</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">344</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x7c44</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x7c87</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0xb6b</span><span class="p">),</span>
+        <span class="mi">51</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">14337</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">104</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">114</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x21</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3d</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x5c</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">34</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x7359</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="o">~~</span><span class="mi">116</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">105</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">103</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~~</span><span class="mi">92</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x22</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x27</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">38</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x6132</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mh">0x2008</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2857</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">59</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">0163</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">14959</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x6058</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span>
+        <span class="mi">105</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x30</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">397</span><span class="p">),</span> <span class="mi">046</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span>
+        <span class="mh">0x2031</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="o">~~</span><span class="mi">46</span><span class="p">,</span> <span class="mh">0x6f66</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mh">0x6e</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">458</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mh">0x6c5</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x2137</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">67</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">337</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mh">0x5c865</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="mi">35</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x26</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1925</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x18b</span><span class="p">),</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">467</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">46</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x61</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">991</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="o">~</span><span class="p">(</span><span class="mh">0x68</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">40</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">503</span><span class="p">),</span> <span class="mh">0x2244</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">101</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">108</span><span class="p">,</span> <span class="mh">0x6f</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x6e</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x22</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">964</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1673</span><span class="p">),</span> <span class="mi">57</span><span class="p">,</span> <span class="mh">0x2865</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span>
+        <span class="mh">0x2654</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1236</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x62</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~~</span><span class="mi">61</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x2b03</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">35</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">97</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">619</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x6ca</span><span class="p">),</span> <span class="mi">32</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2d</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">976</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x23</span><span class="p">,</span>
+        <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x24</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">96</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x4273</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1920</span><span class="p">),</span> <span class="mi">960</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="o">~~</span><span class="mi">34</span><span class="p">,</span> <span class="mi">0156</span><span class="p">,</span>
+        <span class="mi">38</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x62</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x6076</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x2252</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">92</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mi">4038</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">),</span> <span class="mi">966</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span>
+        <span class="mi">88</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mh">0x58d79</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x72</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1021</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1427</span><span class="p">),</span> <span class="mi">93</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">114</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">~~</span><span class="mi">101</span><span class="p">,</span> <span class="mh">0x6689</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">338</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">0114</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">1186</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">0141</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">))</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">0143</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">104</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x2118</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x3e15</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x3078</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">040</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span>
+        <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x18b40</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">58</span><span class="p">,</span> <span class="mh">0x2093</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">487</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">615</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">33</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span>
+        <span class="mi">102</span><span class="p">,</span> <span class="mi">111</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x72</span><span class="p">,</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="o">~~</span><span class="mi">40</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x69</span><span class="p">,</span>
+        <span class="mi">32</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mh">0x3b91</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mh">0x69</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x18b</span><span class="p">),</span> <span class="o">~~</span><span class="mi">60</span><span class="p">,</span> <span class="mi">320</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">59</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mh">0x2b</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x29</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x7b68</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x61</span><span class="p">,</span>
+        <span class="mi">32</span><span class="p">,</span> <span class="mi">053</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1672</span><span class="p">),</span> <span class="mi">105</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="o">~~</span><span class="mi">1944</span><span class="p">),</span> <span class="mi">125</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~~</span><span class="mi">32</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">~~</span><span class="mi">96</span><span class="p">,</span> <span class="mi">0134</span><span class="p">,</span> <span class="mi">348</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">056</span><span class="p">,</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1931</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">)),</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="o">~~</span><span class="mi">1489</span><span class="p">),</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x1cb46</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">),</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span>
+        <span class="mi">53</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x21</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x2013</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0xb2845</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">),</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mi">1987</span><span class="p">),</span> <span class="mi">92</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="mi">100</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x6f</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">117</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x65</span><span class="p">,</span> <span class="mi">0156</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mh">0x6057</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span>
+        <span class="mi">38</span><span class="p">,</span> <span class="mi">435</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xb05</span> <span class="o">^</span> <span class="mi">0</span><span class="p">)),</span> <span class="nx">_$w4I</span><span class="p">(</span><span class="mh">0x78456</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span> <span class="mh">0x2452</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x5a</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">47</span><span class="p">)</span>
+    <span class="o">+</span> <span class="nx">__JtOCokI16</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x69</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">115</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">1165</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xb24</span> <span class="o">^</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">114</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1483</span><span class="p">),</span> <span class="mh">0x6009</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mh">0x68884</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mh">0xb70</span><span class="p">),</span>
+        <span class="mh">0x35</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="mi">1669</span><span class="p">),</span> <span class="mi">48</span><span class="p">,</span> <span class="mh">0x6003</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="nx">_$nK07</span><span class="p">(</span><span class="mh">0x18b</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x25</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x60</span><span class="p">,</span>
+        <span class="nx">_$w4I</span><span class="p">(</span><span class="o">~~</span><span class="mi">1920</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x34</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x2e</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x2055</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mh">0x2e32</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xb39</span> <span class="o">^</span> <span class="mi">0</span><span class="p">)),</span>
+        <span class="mi">101</span><span class="p">,</span> <span class="nx">_$DCDm</span><span class="p">(</span><span class="mi">1491</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x74</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="o">~~</span><span class="mi">101</span><span class="p">,</span> <span class="o">~~</span><span class="mi">69</span><span class="p">,</span> <span class="mh">0x6c73</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~~</span><span class="mi">101</span><span class="p">,</span> <span class="mh">0x60</span><span class="p">,</span> <span class="mi">33</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2842</span><span class="p">),</span>
+        <span class="mh">0x2578</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="o">~~</span><span class="mi">33</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x7f</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mh">0x2485</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mi">96</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">38</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x62</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x2814</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x6010</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x20</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mh">0x0</span> <span class="o">|</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="mh">0x6f12</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mh">0x6a64</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">116</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="mi">96</span><span class="p">,</span>
+        <span class="mi">35</span><span class="p">,</span> <span class="mi">846</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mh">0x2892</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="mh">0x6344</span> <span class="o">/</span> <span class="mi">0400</span><span class="p">,</span> <span class="o">~~</span><span class="mi">96</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x23</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">835</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="mi">379</span> <span class="o">/</span> <span class="mh">0xA</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x60</span> <span class="o">^</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">46</span><span class="p">,</span>
+        <span class="mi">48</span><span class="p">,</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x29</span> <span class="o">^</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">34</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">^</span> <span class="mh">0x00</span><span class="p">),</span> <span class="nx">_$Bkcs</span><span class="p">(</span><span class="o">~~</span><span class="mi">1665</span><span class="p">),</span> <span class="nx">_$cYbd</span><span class="p">(</span><span class="mi">2914</span><span class="p">)));</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="获取最终的-js-函数">获取最终的 js 函数</h3>
+
+<p>上面是几个方法函数，下面是通过一些数学计算生成了一些数，通过第一个方法函数转成字符串，经过转换后 js 就变得基本上可读了，大概为以下类型：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">execute();
+function execute() {
+    try {
+        return d(948, 309, 9254981, 480, 651, 690, 572, 522);
+    } catch (e) {
+        return -99;
+    }
+}
+function d(aa, bb, cc, dd, ee, ff, gg, hh) {
+    var param16 = aa;
+    var param17 = bb;
+    var param1 = cc;
+    var param12 = dd;
+    var param2 = ee;
+    var param3 = ff;
+    var param4 = gg;
+    var param11 = hh;
+    var param10 = a(param16, param17);
+    var param14 = b(a(param10, param2), param3);
+    var param15 = a(param12, param11) + param4;
+    var param5 = b(param1, param3);
+    var param6 = param5 - param4;
+    var param7 = a(param6, param4);
+    var param8 = a(param2, param4);
+    param4 = param2 + param3 * 4;
+    param2 = b(a(param4, param1), param2);
+    var param9 = param8 * 3;
+    var param13 = param9 + b(param12, param7);
+    return c(param15, param13, param6);
+}
+function a(a, b) {
+    if (typeof location == &#34;undefined&#34; || typeof location.href != &#34;string&#34;) {
+        return a + b;
+    } else if (typeof location != &#34;undefined&#34; &amp;&amp; typeof location.hostname == &#34;string&#34; &amp;&amp; location.hostname.match(&#34;elong&#34;)) {
+        return a - b;
+    } else {
+        b = a - b;
+        a = b - a;
+        return a - b;
+    }
+}
+function b(a, b) {
+    if (typeof location != &#34;undefined&#34; &amp;&amp; typeof location.href == &#34;string&#34; &amp;&amp; location.href.match(&#34;elong&#34;)) {
+        return a - b;
+    } else {
+        var c = b &gt; 0 ? b : 0 - b;
+        for (var i = 0; i &lt; c; i++) {
+            a += i;
+        }
+        return a;
+    }
+}
+function c(a, b, c) {
+    if (typeof document == &#34;undefined&#34;) {
+        return a;
+    } else if (typeof history == &#34;undefined&#34;) {
+        return b;
+    } else if (typeof document != &#34;undefined&#34; &amp;&amp; (typeof document.createElement == &#34;function&#34; || typeof document.createElement == &#34;object&#34;)) {
+        return c;
+    } else {
+        return -99;
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<h3 id="构造伪造的-python-方法">构造伪造的 python 方法</h3>
+
+<p>这些方法中 execute 为主方法，它调用 d ，d 又调用 a，b，c 三个函数。从 a，b，c 中我们发现了为什么之前我们获取到的 check_code 是不准确的。由于 location ，history，document 等相关判断导致的，但由于这是系统变量，执行执行 location=xxx 的话会跳转到指定页面，所以使用伪造的方法进行运行。以下为最终的解析方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Time    : 2017/7/4 下午9:40</span>
+<span class="c1"># @Author  : Hou Rong</span>
+<span class="c1"># @Site    : </span>
+<span class="c1"># @File    : test_web.py</span>
+<span class="c1"># @Software: PyCharm</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">execjs</span>
+<span class="kn">import</span> <span class="nn">pyquery</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">out_date</span> <span class="o">=</span> <span class="s1">&#39;2017-10-05&#39;</span>
+    <span class="n">in_date</span> <span class="o">=</span> <span class="s1">&#39;2017-10-04&#39;</span>
+    <span class="n">hotel_id</span> <span class="o">=</span> <span class="s1">&#39;315197&#39;</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+
+    <span class="n">new_headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">:</span> <span class="s1">&#39;gzip, deflate&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Accept-Language&#39;</span><span class="p">:</span> <span class="s1">&#39;zh-CN,zh;q=0.8&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Cache-Control&#39;</span><span class="p">:</span> <span class="s1">&#39;no-cache&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Connection&#39;</span><span class="p">:</span> <span class="s1">&#39;keep-alive&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Host&#39;</span><span class="p">:</span> <span class="s1">&#39;m.elong.com&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DNT&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;X-Requested-With&#39;</span><span class="p">:</span> <span class="s1">&#39;XMLHttpRequest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_headers</span><span class="p">)</span>
+
+    <span class="n">url_A</span> <span class="o">=</span> <span class="s1">&#39;http://m.elong.com/ihotel/{0}/?source_id={0}#detailTab&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hotel_id</span><span class="p">)</span>
+    <span class="n">page_A</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_A</span><span class="p">)</span>
+
+    <span class="c1"># debug</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">pyquery</span><span class="o">.</span><span class="n">PyQuery</span><span class="p">(</span><span class="n">page_A</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># lxml //*[@id=&#34;tsdDetail&#34;]</span>
+    <span class="n">value_str</span> <span class="o">=</span> <span class="n">doc</span><span class="p">(</span><span class="s1">&#39;#tsdDetail&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="p">()</span>
+
+    <span class="n">ph_runtime</span> <span class="o">=</span> <span class="n">execjs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhantomJS&#39;</span><span class="p">)</span>
+    <span class="n">js_func</span> <span class="o">=</span> <span class="n">ph_runtime</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        var localContext = {
+</span><span class="s1">            &#34;location&#34;: {
+</span><span class="s1">                href: &#34;http://m.elong.com&#34;,
+</span><span class="s1">                hostname: &#34;m.elong.com&#34;
+</span><span class="s1">            },
+</span><span class="s1">            &#34;history&#34;: &#34;history&#34;,
+</span><span class="s1">            &#34;document&#34;: {
+</span><span class="s1">                createElement: function () {
+</span><span class="s1">                }
+</span><span class="s1">            }
+</span><span class="s1">        };
+</span><span class="s1">        with (localContext) 
+</span><span class="s1">        {
+</span><span class="s1">            var a=</span><span class="si">%s</span><span class="s1">;
+</span><span class="s1">            var b=a.replace(/\)\^-1/gm, &#34;)&amp;-1&#34;);
+</span><span class="s1">            var c=eval(b);
+</span><span class="s1">        }
+</span><span class="s1">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="nb">repr</span><span class="p">(</span><span class="n">value_str</span><span class="p">),))</span>
+    <span class="n">check_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">js_func</span><span class="o">.</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">))</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;check code&#39;</span><span class="p">,</span> <span class="n">check_code</span><span class="p">)</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="n">url_A</span>
+    <span class="p">})</span>
+
+    <span class="n">page_B</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s1">&#39;http://m.elong.com/ihotel/detail/DetailRoomList/?hotelId={3}&amp;inDate={0}&amp;outDate={1}&amp;roomPerson=1|2&amp;code={2}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">in_date</span><span class="p">,</span> <span class="n">out_date</span><span class="p">,</span> <span class="n">check_code</span><span class="p">,</span> <span class="n">hotel_id</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">page_B</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>构造 localContext 使得其中的判断正确，而后再次调用我们之前的函数即可。由此我们获取到了最终的 check_code 。</p>
+
+<p>所以我们最终的解析就可以用这两部完成：</p>
+
+<ol>
+<li>打请求，计算并获取 check_code</li>
+<li>通过正确的 check_code 加上相关参数获取数据即可</li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">侯容</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2017-07-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234641.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234801.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a>
+          <a href="/tags/python/">Python</a>
+          <a href="/tags/javascript/">JavaScript</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E7%88%AC%E8%99%AB%E6%8A%93%E5%8F%96%E5%9B%9E%E6%9D%A5%E7%9A%84%E6%95%B0%E6%8D%AE%E9%87%8D%E5%A4%8D%E9%97%AE%E9%A2%98/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">爬虫抓取回来的数据重复问题</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/centos-%E5%AE%89%E8%A3%85-autofs/">
+            <span class="next-text nav-default">CentOS 安装 autofs</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    (function() {
+      
+      
+      if (window.location.hostname === 'localhost') return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'hou-rongs';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:nmghr9@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/hou-rong" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/u/6481011018" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/hou-rong-5/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://home.hourong.me:35000/" class="iconfont icon-gitlab" title="gitlab"></a>
+  <a href="https://hou-rong.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">侯容</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>User32.dll中的函数 - 海纳百川，有容乃大</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="侯容" /><meta name="description" content="通过dumpbin /exports user32.dll可以获得其中带函数名称 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39" /><meta name="keywords" content="互联网, 技术, internet, technology, hourong, blog, 侯容, 博客, 海纳百川, 有容乃大" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.5 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hou-rong.github.io/post/user32.dll%E4%B8%AD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="User32.dll中的函数" />
+<meta property="og:description" content="通过dumpbin /exports user32.dll可以获得其中带函数名称 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hou-rong.github.io/post/user32.dll%E4%B8%AD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" />
+<meta property="article:published_time" content="2015-06-07T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2015-06-07T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="User32.dll中的函数">
+<meta itemprop="description" content="通过dumpbin /exports user32.dll可以获得其中带函数名称 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39">
+
+
+<meta itemprop="datePublished" content="2015-06-07T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2015-06-07T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="3225">
+
+
+
+<meta itemprop="keywords" content="C#," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="User32.dll中的函数"/>
+<meta name="twitter:description" content="通过dumpbin /exports user32.dll可以获得其中带函数名称 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">侯容的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">侯容的博客</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">User32.dll中的函数</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2015-06-07 </span>
+        
+          <span class="more-meta"> 约 3225 字 </span>
+          <span class="more-meta"> 预计阅读 7 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>通过<code>dumpbin /exports user32.dll</code>可以获得其中带函数名称</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dumpbin.exe```处于```{root}\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\```" data-lang="dumpbin.exe```处于```{root}\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\```"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dumpbin.exe```处于```{root}\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\```" data-lang="dumpbin.exe```处于```{root}\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\```">&lt;!-- more --&gt;
+
+```cs
+using System;    
+using System.Collections.Generic;    
+using System.Linq;    
+using System.Text;    
+using System.Runtime.InteropServices;    
+   
+namespace WindowsAPI    
+{    
+    class CSharp_Win32Api    
+    {   
+        #region User32.dll 函数    
+        /// &lt;summary&gt;    
+        /// 该函数检索一指定窗口的客户区域或整个屏幕的显示设备上下文环境的句柄，以后可以在GDI函数中使用该句柄来在设备上下文环境中绘图。hWnd：设备上下文环境被检索的窗口的句柄    
+        /// &lt;/summary&gt;    
+        [DllImport(&#34;user32.dll&#34;, CharSet = CharSet.Auto)]    
+        public static extern IntPtr GetDC(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 函数释放设备上下文环境（DC）供其他应用程序使用。    
+        /// &lt;/summary&gt;    
+        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);    
+        /// &lt;summary&gt;    
+        /// 该函数返回桌面窗口的句柄。桌面窗口覆盖整个屏幕。    
+        /// &lt;/summary&gt;    
+        static public extern IntPtr GetDesktopWindow();    
+        /// &lt;summary&gt;    
+        /// 该函数设置指定窗口的显示状态。    
+        /// &lt;/summary&gt;    
+        static public extern bool ShowWindow(IntPtr hWnd, short State);    
+        /// &lt;summary&gt;    
+        /// 通过发送重绘消息 WM_PAINT 给目标窗体来更新目标窗体客户区的无效区域。    
+        /// &lt;/summary&gt;    
+        static public extern bool UpdateWindow(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数将创建指定窗口的线程设置到前台，并且激活该窗口。键盘输入转向该窗口，并为用户改各种可视的记号。系统给创建前台窗口的线程分配的权限稍高于其他线程。    
+        /// &lt;/summary&gt;    
+        static public extern bool SetForegroundWindow(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数改变一个子窗口，弹出式窗口式顶层窗口的尺寸，位置和Z序。    
+        /// &lt;/summary&gt;    
+        static public extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int Width, int Height, uint flags);    
+        /// &lt;summary&gt;    
+        /// 打开剪切板    
+        /// &lt;/summary&gt;    
+        static public extern bool OpenClipboard(IntPtr hWndNewOwner);    
+        /// &lt;summary&gt;    
+        /// 关闭剪切板    
+        /// &lt;/summary&gt;    
+        static public extern bool CloseClipboard();    
+        /// &lt;summary&gt;    
+        /// 打开清空&lt;/summary&gt;    
+        static public extern bool EmptyClipboard();    
+        /// &lt;summary&gt;    
+        /// 将存放有数据的内存块放入剪切板的资源管理中    
+        /// &lt;/summary&gt;    
+        static public extern IntPtr SetClipboardData(uint Format, IntPtr hData);    
+        /// &lt;summary&gt;    
+        /// 在一个矩形中装载指定菜单条目的屏幕坐标信息     
+        /// &lt;/summary&gt;    
+        static public extern bool GetMenuItemRect(IntPtr hWnd, IntPtr hMenu, uint Item, ref RECT rc);    
+   
+        [DllImport(&#34;user32.dll&#34;, ExactSpelling = true, CharSet = CharSet.Auto)]    
+        /// &lt;summary&gt;    
+        /// 该函数获得一个指定子窗口的父窗口句柄。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr GetParent(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数将指定的消息发送到一个或多个窗口。此函数为指定的窗口调用窗口程序，直到窗口程序处理完消息再返回。　    
+        /// &lt;/summary&gt;    
+        /// &lt;param name=&#34;hWnd&#34;&gt;其窗口程序将接收消息的窗口的句柄&lt;/param&gt;    
+        /// &lt;param name=&#34;msg&#34;&gt;指定被发送的消息&lt;/param&gt;    
+        /// &lt;param name=&#34;wParam&#34;&gt;指定附加的消息指定信息&lt;/param&gt;    
+        /// &lt;param name=&#34;lParam&#34;&gt;指定附加的消息指定信息&lt;/param&gt;    
+        /// &lt;returns&gt;&lt;/returns&gt;    
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);    
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, IntPtr lParam);            
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref RECT lParam);    
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref POINT lParam);           
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref TBBUTTON lParam);            
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref TBBUTTONINFO lParam);          
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref REBARBANDINFO lParam);          
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref TVITEM lParam);           
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref LVITEM lParam);        
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref HDITEM lParam);       
+        public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, ref HD_HITTESTINFO hti);      
+        /// &lt;summary&gt;    
+        /// 该函数将一个消息放入（寄送）到与指定窗口创建的线程相联系消息队列里    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr PostMessage(IntPtr hWnd, int msg, int wParam, int lParam);    
+        public static extern IntPtr SetWindowsHookEx(int hookid, HookProc pfnhook, IntPtr hinst, int threadid);    
+   
+        [DllImport(&#34;user32.dll&#34;, CharSet = CharSet.Auto, ExactSpelling = true)]    
+        public static extern bool UnhookWindowsHookEx(IntPtr hhook);    
+   
+        [DllImport(&#34;user32.dll&#34;, CharSet = CharSet.Auto, ExactSpelling = true)]    
+        public static extern IntPtr CallNextHookEx(IntPtr hhook, int code, IntPtr wparam, IntPtr lparam);    
+        /// &lt;summary&gt;    
+        /// 该函数对指定的窗口设置键盘焦点。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr SetFocus(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数在指定的矩形里写入格式化文本，根据指定的方法对文本格式化（扩展的制表符，字符对齐、折行等）。    
+        /// &lt;/summary&gt;    
+        public extern static int DrawText(IntPtr hdc, string lpString, int nCount, ref RECT lpRect, int uFormat);    
+        /// &lt;summary&gt;    
+        /// 该函数改变指定子窗口的父窗口。    
+        /// &lt;/summary&gt;    
+        public extern static IntPtr SetParent(IntPtr hChild, IntPtr hParent);    
+        /// &lt;summary&gt;    
+        /// 获取对话框中子窗口控件的句柄    
+        /// &lt;/summary&gt;    
+        public extern static IntPtr GetDlgItem(IntPtr hDlg, int nControlID);    
+        /// &lt;summary&gt;    
+        /// 该函数获取窗口客户区的坐标。    
+        /// &lt;/summary&gt;    
+        public extern static int GetClientRect(IntPtr hWnd, ref RECT rc);    
+        /// &lt;summary&gt;    
+        /// 该函数向指定的窗体添加一个矩形，然后窗口客户区域的这一部分将被重新绘制。    
+        /// &lt;/summary&gt;    
+        public extern static int InvalidateRect(IntPtr hWnd, IntPtr rect, int bErase);    
+        /// &lt;summary&gt;    
+        /// 该函数产生对其他线程的控制，如果一个线程没有其他消息在其消息队列里。    
+        /// &lt;/summary&gt;    
+        public static extern bool WaitMessage();    
+        /// &lt;summary&gt;    
+        /// 该函数为一个消息检查线程消息队列，并将该消息（如果存在）放于指定的结构。    
+        /// &lt;/summary&gt;    
+        public static extern bool PeekMessage(ref MSG msg, int hWnd, uint wFilterMin, uint wFilterMax, uint wFlag);    
+        /// &lt;summary&gt;    
+        /// 该函数从调用线程的消息队列里取得一个消息并将其放于指定的结构。此函数可取得与指定窗口联系的消息和由PostThreadMesssge寄送的线程消息。此函数接收一定范围的消息值。    
+        /// &lt;/summary&gt;    
+        public static extern bool GetMessage(ref MSG msg, int hWnd, uint wFilterMin, uint wFilterMax);    
+        /// &lt;summary&gt;    
+        /// 该函数将虚拟键消息转换为字符消息。    
+        /// &lt;/summary&gt;    
+        public static extern bool TranslateMessage(ref MSG msg);    
+        /// &lt;summary&gt;    
+        /// 该函数调度一个消息给窗口程序。    
+        /// &lt;/summary&gt;    
+        public static extern bool DispatchMessage(ref MSG msg);    
+        /// &lt;summary&gt;    
+        /// 该函数从一个与应用事例相关的可执行文件（EXE文件）中载入指定的光标资源.    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr LoadCursor(IntPtr hInstance, uint cursor);    
+        /// &lt;summary&gt;    
+        /// 该函数确定光标的形状。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr SetCursor(IntPtr hCursor);    
+        /// &lt;summary&gt;    
+        /// 确定当前焦点位于哪个控件上。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr GetFocus();    
+        /// &lt;summary&gt;    
+        /// 该函数从当前线程中的窗口释放鼠标捕获，并恢复通常的鼠标输入处理。捕获鼠标的窗口接收所有的鼠标输入（无论光标的位置在哪里），除非点击鼠标键时，光标热点在另一个线程的窗口中。    
+        /// &lt;/summary&gt;    
+        public static extern bool ReleaseCapture();    
+        /// &lt;summary&gt;    
+        /// 准备指定的窗口来重绘并将绘画相关的信息放到一个PAINTSTRUCT结构中。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr BeginPaint(IntPtr hWnd, ref PAINTSTRUCT ps);    
+        /// &lt;summary&gt;    
+        /// 标记指定窗口的绘画过程结束,每次调用BeginPaint函数之后被请求    
+        /// &lt;/summary&gt;    
+        public static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT ps);    
+        /// &lt;summary&gt;    
+        /// 半透明窗体    
+        /// &lt;/summary&gt;    
+        public static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref POINT pptDst, ref SIZE psize, IntPtr hdcSrc, ref POINT pprSrc, Int32 crKey, ref BLENDFUNCTION pblend, Int32 dwFlags);    
+        /// &lt;summary&gt;    
+        /// 该函数返回指定窗口的边框矩形的尺寸。该尺寸以相对于屏幕坐标左上角的屏幕坐标给出。    
+        /// &lt;/summary&gt;    
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT rect);    
+        /// &lt;summary&gt;    
+        /// 该函数将指定点的用户坐标转换成屏幕坐标。    
+        /// &lt;/summary&gt;    
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT pt);    
+        /// &lt;summary&gt;    
+        /// 当在指定时间内鼠标指针离开或盘旋在一个窗口上时，此函数寄送消息。    
+        /// &lt;/summary&gt;    
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENTS tme);    
+        /// &lt;summary&gt;    
+        ///     
+        /// &lt;/summary&gt;    
+        public static extern bool SetWindowRgn(IntPtr hWnd, IntPtr hRgn, bool redraw);    
+        /// &lt;summary&gt;    
+        /// 该函数检取指定虚拟键的状态。    
+        /// &lt;/summary&gt;    
+        public static extern ushort GetKeyState(int virtKey);    
+        /// &lt;summary&gt;    
+        /// 该函数改变指定窗口的位置和尺寸。对于顶层窗口，位置和尺寸是相对于屏幕的左上角的：对于子窗口，位置和尺寸是相对于父窗口客户区的左上角坐标的。    
+        /// &lt;/summary&gt;    
+        public static extern bool MoveWindow(IntPtr hWnd, int x, int y, int width, int height, bool repaint);    
+        /// &lt;summary&gt;    
+        /// 该函数获得指定窗口所属的类的类名。    
+        /// &lt;/summary&gt;    
+        public static extern int GetClassName(IntPtr hWnd, out STRINGBUFFER ClassName, int nMaxCount);    
+        /// &lt;summary&gt;    
+        /// 该函数改变指定窗口的属性    
+        /// &lt;/summary&gt;    
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);    
+        /// &lt;summary&gt;    
+        /// 该函数检索指定窗口客户区域或整个屏幕的显示设备上下文环境的句柄，在随后的GDI函数中可以使用该句柄在设备上下文环境中绘图。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr hRegion, uint flags);    
+        /// &lt;summary&gt;    
+        /// 获取整个窗口（包括边框、滚动条、标题栏、菜单等）的设备场景 返回值 Long。    
+        /// &lt;/summary&gt;    
+        public static extern IntPtr GetWindowDC(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数用指定的画刷填充矩形，此函数包括矩形的左上边界，但不包括矩形的右下边界。    
+        /// &lt;/summary&gt;    
+        public static extern int FillRect(IntPtr hDC, ref RECT rect, IntPtr hBrush);    
+        /// &lt;summary&gt;    
+        /// 该函数返回指定窗口的显示状态以及被恢复的、最大化的和最小化的窗口位置。    
+        /// &lt;/summary&gt;    
+        public static extern int GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT wp);    
+        /// &lt;summary&gt;    
+        /// 该函数改变指定窗口的标题栏的文本内容    
+        /// &lt;/summary&gt;    
+        public static extern int SetWindowText(IntPtr hWnd, string text);    
+        /// &lt;summary&gt;    
+        /// 该函数将指定窗口的标题条文本（如果存在）拷贝到一个缓存区内。如果指定的窗口是一个控制，则拷贝控制的文本。    
+        /// &lt;/summary&gt;    
+        public static extern int GetWindowText(IntPtr hWnd, out STRINGBUFFER text, int maxCount);    
+        /// &lt;summary&gt;    
+        /// 用于得到被定义的系统数据或者系统配置信息.    
+        /// &lt;/summary&gt;    
+        static public extern int GetSystemMetrics(int nIndex);    
+        /// &lt;summary&gt;    
+        /// 该函数设置滚动条参数，包括滚动位置的最大值和最小值，页面大小，滚动按钮的位置。    
+        /// &lt;/summary&gt;    
+        static public extern int SetScrollInfo(IntPtr hwnd, int bar, ref SCROLLINFO si, int fRedraw);    
+        /// &lt;summary&gt;    
+        /// 该函数显示或隐藏所指定的滚动条。    
+        /// &lt;/summary&gt;    
+        public static extern int ShowScrollBar(IntPtr hWnd, int bar, int show);    
+        /// &lt;summary&gt;    
+        /// 该函数可以激活一个或两个滚动条箭头或是使其失效。    
+        /// &lt;/summary&gt;    
+        public static extern int EnableScrollBar(IntPtr hWnd, uint flags, uint arrows);    
+        /// &lt;summary&gt;    
+        /// 该函数将指定的窗口设置到Z序的顶部。    
+        /// &lt;/summary&gt;    
+        public static extern int BringWindowToTop(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数滚动指定窗体客户区域的目录。    
+        /// &lt;/summary&gt;    
+        static public extern int ScrollWindowEx(IntPtr hWnd, int dx, int dy,ref RECT rcScroll, ref RECT rcClip, IntPtr UpdateRegion, ref RECT rcInvalidated, uint flags);    
+        /// &lt;summary&gt;    
+        /// 该函数确定给定的窗口句柄是否识别一个已存在的窗口。    
+        /// &lt;/summary&gt;    
+        public static extern int IsWindow(IntPtr hWnd);    
+        /// &lt;summary&gt;    
+        /// 该函数将256个虚拟键的状态拷贝到指定的缓冲区中。    
+        /// &lt;/summary&gt;    
+        public static extern int GetKeyboardState(byte[] pbKeyState);    
+        /// &lt;summary&gt;    
+        /// 该函数将指定的虚拟键码和键盘状态翻译为相应的字符或字符串。该函数使用由给定的键盘布局句柄标识的物理键盘布局和输入语言来翻译代码。    
+        /// &lt;/summary&gt;    
+        public static extern int ToAscii(int uVirtKey,int uScanCode, byte[] lpbKeyState, byte[] lpwTransKey,int fuState);   
+        #endregion    
+   
+    }    
+}  </code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">侯容</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2015-06-07
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234641.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234801.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c/">C#</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/ubuntu_disable_ping/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Ubuntu 禁用 Ping</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/cx_freeze-%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/">
+            <span class="next-text nav-default">cx_Freeze 使用学习</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    (function() {
+      
+      
+      if (window.location.hostname === 'localhost') return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'hou-rongs';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:nmghr9@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/hou-rong" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/u/6481011018" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/hou-rong-5/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://home.hourong.me:35000/" class="iconfont icon-gitlab" title="gitlab"></a>
+  <a href="https://hou-rong.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">侯容</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

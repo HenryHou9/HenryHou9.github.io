@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>LVS DR模式配置 - 海纳百川，有容乃大</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="侯容" /><meta name="description" content="LVS-DR模式以及工作原理 LVS有LVS-DR，LVS-NAT，LVS-TUN三种模式，其中DR模式意为Direct Routing（直接路" /><meta name="keywords" content="互联网, 技术, internet, technology, hourong, blog, 侯容, 博客, 海纳百川, 有容乃大" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.5 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hou-rong.github.io/post/lvs-dr%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="LVS DR模式配置" />
+<meta property="og:description" content="LVS-DR模式以及工作原理 LVS有LVS-DR，LVS-NAT，LVS-TUN三种模式，其中DR模式意为Direct Routing（直接路" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hou-rong.github.io/post/lvs-dr%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/" />
+<meta property="article:published_time" content="2015-11-29T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2015-11-29T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="LVS DR模式配置">
+<meta itemprop="description" content="LVS-DR模式以及工作原理 LVS有LVS-DR，LVS-NAT，LVS-TUN三种模式，其中DR模式意为Direct Routing（直接路">
+
+
+<meta itemprop="datePublished" content="2015-11-29T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2015-11-29T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1027">
+
+
+
+<meta itemprop="keywords" content="Linux,负载均衡," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="LVS DR模式配置"/>
+<meta name="twitter:description" content="LVS-DR模式以及工作原理 LVS有LVS-DR，LVS-NAT，LVS-TUN三种模式，其中DR模式意为Direct Routing（直接路"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">侯容的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">侯容的博客</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">LVS DR模式配置</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2015-11-29 </span>
+        
+          <span class="more-meta"> 约 1027 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#lvs-dr模式以及工作原理">LVS-DR模式以及工作原理</a></li>
+<li><a href="#ipvsadm-的安装以及调度算法">ipvsadm 的安装以及调度算法</a>
+<ul>
+<li><a href="#安装">安装</a></li>
+<li><a href="#调度算法">调度算法</a></li>
+</ul></li>
+<li><a href="#基本配置">基本配置</a>
+<ul>
+<li><a href="#load-balance-节点">Load Balance 节点</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#ifconfig-eth0-0-192-168-1-88-24-up">ifconfig eth0:0 192.168.1.<sup>88</sup>&frasl;<sub>24</sub> up</a></li>
+<li><a href="#ifconfig-eth0-0">ifconfig eth0:0</a>
+<ul>
+<li>
+<ul>
+<li><a href="#web节点2">Web节点2</a></li>
+<li><a href="#load-balance-节点-1">Load Balance 节点</a></li>
+</ul></li>
+<li><a href="#配置脚本">配置脚本</a>
+<ul>
+<li><a href="#web-节点配置脚本">Web 节点配置脚本</a></li>
+<li><a href="#load-balance服务开启脚本">Load Balance服务开启脚本</a></li>
+</ul></li>
+<li><a href="#检测">检测</a>
+<ul>
+<li><a href="#curl-检测">curl 检测</a></li>
+<li><a href="#浏览器查看">浏览器查看</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h2 id="lvs-dr模式以及工作原理">LVS-DR模式以及工作原理</h2>
+
+<ul>
+<li>LVS有LVS-DR，LVS-NAT，LVS-TUN三种模式，其中DR模式意为Direct Routing（直接路由），是调度器与实际服务器都有一块网卡连在同一物理网段上的情况</li>
+<li>Director接收用户的请求，然后根据负载均衡算法选取一台realserver，将包转发过去，最后由realserver直接回复给用户</li>
+<li><a href="http://os.51cto.com/art/201105/264303.htm">详细工作原理</a>以及<a href="http://os.51cto.com/art/201105/262536.htm">相关问题</a></li>
+</ul>
+
+<h2 id="ipvsadm-的安装以及调度算法">ipvsadm 的安装以及调度算法</h2>
+
+<h3 id="安装">安装</h3>
+
+<p><code>yum install ipvsadm -y</code></p>
+
+<h3 id="调度算法">调度算法</h3>
+
+<p><code>ipvsadm -A -t 192.168.1.50:80 -s rr</code>，其中<strong>rr</strong>为调度算法的一种
+- 静态方法：仅根据调度算法本身进行调度
+ - rr: 轮询调度，轮叫调度
+ - wrr:加权轮询
+ - sh: 源地址hash
+ - dh: 目标地址hash
+- 动态方法：根据算法及各RS当前的负载情况进行调度
+ - lc: 最少连接
+ - wlc:加权最少连接
+ - sed: 最短期望延迟
+ - nq: 永不排队连接
+ - lblc:基于局部性的最少连接
+ - lblcr: 带复制的基于局部性的最少连接</p>
+
+<p><strong>十种调度算法的<a href="http://blog.csdn.net/scape1989/article/details/21085659">具体介绍</a></strong>
+<!-- more --></p>
+
+<h2 id="基本配置">基本配置</h2>
+
+<h3 id="load-balance-节点">Load Balance 节点</h3>
+
+<ul>
+<li><p>主机节点已将物理网卡改名为eth0
+``` conf</p>
+
+<h1 id="ifconfig-eth0-0-192-168-1-88-24-up">ifconfig eth0:0 192.168.1.<sup>88</sup>&frasl;<sub>24</sub> up</h1>
+
+<h1 id="ifconfig-eth0-0">ifconfig eth0:0</h1></li>
+</ul>
+
+<p>eth0:0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.88  netmask 255.255.255.0  broadcast 192.168.1.255
+        ether 00:0c:29:f0:fb:5f  txqueuelen 1000  (Ethernet)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">### Web节点1
+- arp_ignore: 如何响应接收ARP地址请求，默认0，1表示仅在请求的地址配置在请求报文的接口进行响应。
+- arp_announce: 如何通告本地地址，默认0，2表示仅通过网络直连的接口的地址。
+- 配置是由于使用的CentOS7 所以网卡为eno16777736，其他系统一般为eth0，可以使用ls /sys/class/net查看
+``` conf
+# echo 1 &gt;/proc/sys/net/ipv4/conf/eno16777736/arp_ignore 
+# echo 1 &gt;/proc/sys/net/ipv4/conf/all/arp_ignore 
+# echo 2 &gt;/proc/sys/net/ipv4/conf/eno16777736/arp_announce 
+# echo 2 &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+# ifconfig lo:0 192.168.1.88/24 up
+# ifconfig lo:0 192.168.1.88 netmask 255.255.255.255 broadcast 192.168.1.88 up
+# route add -host 192.168.1.88 dev lo:0</pre></td></tr></table>
+</div>
+</div>
+<h3 id="web节点2">Web节点2</h3>
+
+<ul>
+<li><p>同上</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf"># echo 1 &gt;/proc/sys/net/ipv4/conf/eno16777736/arp_ignore 
+# echo 1 &gt;/proc/sys/net/ipv4/conf/all/arp_ignore 
+# echo 2 &gt;/proc/sys/net/ipv4/conf/eno16777736/arp_announce 
+# echo 2 &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+# ifconfig lo:0 192.168.1.88/24 up
+# ifconfig lo:0 192.168.1.88 netmask 255.255.255.255 broadcast 192.168.1.88 up
+# route add -host 192.168.1.88 dev lo:0</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="load-balance-节点-1">Load Balance 节点</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf"># ipvsadm -A -t 192.168.1.88:80 -s rr
+# ipvsadm -a -t 192.168.1.88:80 -r 192.168.1.51 -g -w 1
+# ipvsadm -a -t 192.168.1.88:80 -r 192.168.1.52 -g -w 1
+# ipvsadm -L -n
+
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+-&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.1.88:80 rr
+-&gt; 192.168.1.51:80              Route   1      0          0         
+-&gt; 192.168.1.52:80              Route   1      0          0   </code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h2 id="配置脚本">配置脚本</h2>
+
+<h3 id="web-节点配置脚本">Web 节点配置脚本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># vim /etc/init.d/lvsdr-node</span>
+<span class="cp">#! /bin/sh
+</span><span class="cp"></span><span class="nv">VIP</span><span class="o">=</span><span class="m">192</span>.168.1.88
+<span class="nv">IFS</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="nb">read</span> -r -a device <span class="o">&lt;&lt;&lt;</span> <span class="sb">`</span>ls /sys/class/net<span class="sb">`</span>
+<span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> in
+start<span class="o">)</span>
+        <span class="nb">echo</span> <span class="m">1</span> &gt;/proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">device</span><span class="p">[0]</span><span class="si">}</span>/arp_ignore 
+        <span class="nb">echo</span> <span class="m">1</span> &gt;/proc/sys/net/ipv4/conf/all/arp_ignore 
+        <span class="nb">echo</span> <span class="m">2</span> &gt;/proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">device</span><span class="p">[0]</span><span class="si">}</span>/arp_announce 
+        <span class="nb">echo</span> <span class="m">2</span> &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+        /sbin/ifconfig lo:0 <span class="nv">$VIP</span>/24 up
+        /sbin/ifconfig lo:0 <span class="nv">$VIP</span> netmask <span class="m">255</span>.255.255.255 broadcast <span class="nv">$VIP</span> up
+        /sbin/route add -host <span class="nv">$VIP</span> dev lo:0
+        <span class="nb">echo</span> <span class="s2">&#34;start lvs server node&#34;</span>
+        <span class="p">;;</span>
+stop<span class="o">)</span>
+        <span class="nb">echo</span> <span class="m">0</span> &gt;/proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">device</span><span class="p">[0]</span><span class="si">}</span>/arp_ignore 
+        <span class="nb">echo</span> <span class="m">0</span> &gt;/proc/sys/net/ipv4/conf/all/arp_ignore 
+        <span class="nb">echo</span> <span class="m">0</span> &gt;/proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">device</span><span class="p">[0]</span><span class="si">}</span>/arp_announce 
+        <span class="nb">echo</span> <span class="m">0</span> &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+        /sbin/ifconfig lo:0 down
+        /sbin/route delete -host <span class="nv">$VIP</span>
+        <span class="nb">echo</span> <span class="s2">&#34;stop lvs server node&#34;</span>
+        <span class="p">;;</span>
+*<span class="o">)</span>
+        <span class="nb">echo</span> <span class="s2">&#34;Usage :</span><span class="nv">$0</span><span class="s2"> {start|stop}&#34;</span>
+        <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">esac</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><code>chmod +x /etc/init.d/lvsdr-node</code>
+<code>service lvsdr-node start</code>  启动
+<code>service lvsdr-node stop</code> 停止</p>
+
+<h3 id="load-balance服务开启脚本">Load Balance服务开启脚本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># vim /etc/init.d/lvsdr-lb</span>
+<span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nv">VIP</span><span class="o">=</span><span class="m">192</span>.168.1.88
+<span class="nv">RIP1</span><span class="o">=</span><span class="m">192</span>.168.1.51
+<span class="nv">RIP2</span><span class="o">=</span><span class="m">192</span>.168.1.52
+<span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> in
+start<span class="o">)</span>
+        /sbin/ifconfig eth0:0 <span class="nv">$VIP</span>/24 up
+        /sbin/ipvsadm -A -t <span class="nv">$VIP</span>:80 -s rr
+        /sbin/ipvsadm -a -t <span class="nv">$VIP</span>:80 -r <span class="nv">$RIP1</span> -g -w <span class="m">1</span>
+        /sbin/ipvsadm -a -t <span class="nv">$VIP</span>:80 -r <span class="nv">$RIP2</span> -g -w <span class="m">1</span>
+        /sbin/ipvsadm -L -n
+        <span class="nb">echo</span> <span class="s2">&#34;start lvs server lb&#34;</span>
+        <span class="p">;;</span>
+stop<span class="o">)</span>
+        /sbin/ipvsadm -C
+        /sbin/ifconfig eth0:0 down
+        <span class="nb">echo</span> <span class="s2">&#34;stop lvs server lb&#34;</span>
+        <span class="p">;;</span>
+*<span class="o">)</span>
+        <span class="nb">echo</span> <span class="s2">&#34;Usage :</span><span class="nv">$0</span><span class="s2"> {start|stop}&#34;</span>
+        <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">esac</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><code>sudo chmod +x /etc/init.d/lvsdr-lb</code>
+<code>service lvsdr-lb start</code>  启动
+<code>service lvsdr-lb stop</code>  停止</p>
+
+<h2 id="检测">检测</h2>
+
+<h3 id="curl-检测">curl 检测</h3>
+
+<p><img src="http://olw01uxs5.bkt.clouddn.com/2017-02-25-Image1.png" alt="Image1" /></p>
+
+<h3 id="浏览器查看">浏览器查看</h3>
+
+<p><img src="http://olw01uxs5.bkt.clouddn.com/2017-02-25-Image2.png" alt="Image2" /></p>
+
+<p><img src="http://olw01uxs5.bkt.clouddn.com/2017-02-25-Image3.png" alt="Image3" /></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">侯容</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2015-11-29
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234641.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="https://hourong.oss-cn-beijing.aliyuncs.com/img/20190803234801.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python-3.5-centos-%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Python 3.5 Centos 安装方法</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/%E6%9E%81%E8%B7%AF%E7%94%B11s-9015%E9%99%8D%E7%BA%A79006-%E9%80%9A%E8%BF%87ttl-%E5%88%B7openwrt/">
+            <span class="next-text nav-default">极路由1s 9015降级9006 通过TTL 刷OpenWrt</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    (function() {
+      
+      
+      if (window.location.hostname === 'localhost') return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'hou-rongs';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:nmghr9@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/hou-rong" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/u/6481011018" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/hou-rong-5/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://home.hourong.me:35000/" class="iconfont icon-gitlab" title="gitlab"></a>
+  <a href="https://hou-rong.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">侯容</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
