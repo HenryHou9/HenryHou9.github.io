@@ -2,13 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://henryhou.com/categories/</loc>
-    <lastmod>2019-08-24T22:46:07+08:00</lastmod>
+    <loc>https://henryhou.com/post/</loc>
+    <lastmod>2020-01-12T03:58:34+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://henryhou.com/tags/drone/</loc>
+    <loc>https://henryhou.com/post/pyhive-%E7%94%A8%E6%88%B7%E5%90%8D%E5%BC%82%E5%B8%B8%E5%B0%8F%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</loc>
+    <lastmod>2020-01-12T03:58:34+08:00</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://henryhou.com/tags/</loc>
+    <lastmod>2020-01-12T03:58:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://henryhou.com/tags/%E5%B0%8F%E9%97%AE%E9%A2%98/</loc>
+    <lastmod>2020-01-12T03:58:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://henryhou.com/</loc>
+    <lastmod>2020-01-12T03:58:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://henryhou.com/categories/</loc>
     <lastmod>2019-08-24T22:46:07+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -20,19 +45,13 @@
   </url>
   
   <url>
+    <loc>https://henryhou.com/tags/drone/</loc>
+    <lastmod>2019-08-24T22:46:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://henryhou.com/tags/plugin/</loc>
-    <lastmod>2019-08-24T22:46:07+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://henryhou.com/post/</loc>
-    <lastmod>2019-08-24T22:46:07+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://henryhou.com/tags/</loc>
     <lastmod>2019-08-24T22:46:07+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -56,13 +75,13 @@
   </url>
   
   <url>
-    <loc>https://henryhou.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <loc>https://henryhou.com/categories/%E5%8D%9A%E5%AE%A2/</loc>
     <lastmod>2019-08-24T22:46:07+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://henryhou.com/categories/%E5%8D%9A%E5%AE%A2/</loc>
+    <loc>https://henryhou.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
     <lastmod>2019-08-24T22:46:07+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -72,12 +91,6 @@
     <lastmod>2019-08-24T22:46:07+08:00</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://henryhou.com/</loc>
-    <lastmod>2019-08-24T22:46:07+08:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -303,12 +316,6 @@
   
   <url>
     <loc>https://henryhou.com/tags/uwsgi/</loc>
-    <lastmod>2017-05-26T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://henryhou.com/tags/%E5%B0%8F%E9%97%AE%E9%A2%98/</loc>
     <lastmod>2017-05-26T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
